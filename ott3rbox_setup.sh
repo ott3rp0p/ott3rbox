@@ -54,7 +54,7 @@ id=$(whoami)
 	printf "#set shell\nset -g default-shell /bin/zsh\n" > /home/$id/my_data/conf/.tmux.conf
 	printf "creating ~/my_data/conf/.zshrc\n"
 	cp /home/$id/my_data/ott3rbox/.zshrc /home/$id/my_data/conf/.zshrc
-}}
+}
 
 #configure everything but terminal prompt
 --config(){
