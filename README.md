@@ -1,4 +1,4 @@
-# pwnbox
+# ott3rbox_setup
 🦦 🍭
 
 setup script for pwnbox
