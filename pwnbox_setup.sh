@@ -12,7 +12,8 @@ if [ "$EUID" -eq 0 ]
 fi
 
 #variables
-toolList="rust\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited"
+toolList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\n"
+toolList2="\n\e[36mLanguages:\033[0m\nRust"
 id=$(whoami)
 
 #probably unnecessary help menu with garbage text alignment
@@ -47,7 +48,7 @@ id=$(whoami)
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
 	printf "#set shell\nset -g default-shell /bin/zsh" > /home/$id/my_data/conf/.tmux.conf
-	curl https://raw.githubusercontent.com/ott3rp0p/pwnbox/main/.zshrc > /home/$id/my_data/conf/.zshrc
+	cp /home/$id/my_data/ott3rbox/.zshrc > /home/$id/my_data/conf/.zshrc
 }
 
 #configure everything but terminal prompt
@@ -108,7 +109,9 @@ id=$(whoami)
 
 #list tools
 --tools-list(){
+	printf "\neverything listed will be downloaded. #comment out in script to ignore certain repos.\n"
 	printf "$toolList"
+	printf "$toolList2"
 	exit
 }
 
