@@ -4,7 +4,7 @@ setup script for pwnbox
 
 ## Use
 ```
-git clone https://github.com/ott3rp0p/ott3rbox.git ~/my_data/
+git clone https://github.com/ott3rp0p/ott3rbox.git ~/my_data/ott3rbox
 chmod +x ~/my_data/ott3rbox/pwnbox_setup.sh
 ~/my_data/ott3rbox/pwnbox_setup.sh
 ```
