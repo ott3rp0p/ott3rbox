@@ -15,18 +15,26 @@ fi
 toolList="rust\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited"
 id=$(whoami)
 
-#garbage text alignment but not bothering with it
+#probably unnecessary help menu with garbage text alignment
 --help(){
-	printf "🦦 🍭\n"
+	printf "🦦 🍭\n\n"
 	if [ -z $1 ] 
 		then printf "\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./pwnbox-setup.sh --help config\nexample:       ./pwnbox-setup.sh --config 10.129.16.182 --tools"
 		exit
-
 	elif [ $1 == "config" ]
-		then printf "set pwnbox configurations for mate panel/desktop/terminal. pulled from ~my_data/conf after setup creates the files"
+		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files."
 		exit
 	elif [ $1 == "setup" ]
-		then printf "after you set your terminal preferences, background image, and panel settings the setup option should be run. it will create or pull the necessary files to ~/my_data/conf/ which will then be saved for future use. you'll only need to run this again if you update some settings that you want to change"
+		then printf "used to save mate settings for terminal/desktop/panel into ~/my_data/conf.\nyou'll only need to run this again if you update some settings that you want to change." 
+		exit
+	elif [ $1 == "conf-prompt" ]
+		then printf "configure terminal prompt.\nwill replace the default so you'll have to redownload .zshrc to revert\nuse --prompt-ex for an example of what it will look like"
+		exit
+	elif [ $1 == "tools" ]
+		then printf "download tools from various web locations. review script for exact URIs\nuse --tools-list to view the tools the will be downloaded"
+		exit
+	elif [ $1 == "otter" ]
+		then printf "otter time"
 		exit
 	fi
 }
@@ -39,8 +47,7 @@ id=$(whoami)
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
 	printf "#set shell\nset -g default-shell /bin/zsh" > /home/$id/my_data/conf/.tmux.conf
-	#upload own zshrc so don't have to use a random one
-	curl https://gist.githubusercontent.com/noahbliss/4fec4f5fa2d2a2bc857cccc5d00b19b6/raw/db5ceb8b3f54b42f0474105b4a7a138ce97c0b7a/kali-zshrc > /home/$id/my_data/conf/.zshrc                              
+	curl https://raw.githubusercontent.com/ott3rp0p/pwnbox/main/.zshrc > /home/$id/my_data/conf/.zshrc
 }
 
 #configure everything but terminal prompt
@@ -81,6 +88,7 @@ id=$(whoami)
 --conf-prompt(){
 	sed -i 's+configure_prompt().*}+configure_prompt() {\n    #case\n            PROMPT="%F{red}┌%f%F{red}[%f%F{cyan}%D{$(/opt/vpnbash.sh)}%f%F{red}]─[%B%F{%(#.red.green)}%n%(#.💀.  🦦 )%m%b%F{%(#.blue.red)}]─[%f%F{magenta}%d%f%F{red}]%f"$'\n'"%F{red}└╼%f%F{green}[%f%F{yellow}%f%F{yellow} $%f"\n    #esac\n}+g' /home/$id/.zshrc
 }
+#show terminal prompt example
 --prompt-ex(){
 	printf "\n\e[31m┌[\e[36m10.10.14.84\e[31m]─[\e[92mott3rp0p 🦦 htb-1hcye3hbvf\e[31m]─[\e[35m/home/ott3rp0p/my_data\e[31m]
 └╼[\e[33m$\n\n"
