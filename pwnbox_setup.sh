@@ -12,8 +12,8 @@ if [ "$EUID" -eq 0 ]
 fi
 
 #variables
-toolList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\n"
-toolList2="\n\e[36mLanguages:\033[0m\nRust"
+gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\n"
+langList="\n\e[36mLanguages:\033[0m\nRust"
 id=$(whoami)
 
 #probably unnecessary help menu with garbage text alignment
@@ -37,6 +37,7 @@ id=$(whoami)
 	elif [ $1 == "otter" ]
 		then printf "otter time"
 		exit
+	else printf "no help menu for \"$1\""
 	fi
 }
 
@@ -110,8 +111,8 @@ id=$(whoami)
 #list tools
 --tools-list(){
 	printf "\neverything listed will be downloaded. #comment out in script to ignore certain repos.\n"
-	printf "$toolList"
-	printf "$toolList2"
+	printf "$gitList"
+	printf "$langList"
 	exit
 }
 
