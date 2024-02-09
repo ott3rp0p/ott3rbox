@@ -88,6 +88,7 @@ id=$(whoami)
 --conf-prompt(){
 	sed -i 's+configure_prompt().*}+configure_prompt() {\n    #case\n            PROMPT="%F{red}┌%f%F{red}[%f%F{cyan}%D{$(/opt/vpnbash.sh)}%f%F{red}]─[%B%F{%(#.red.green)}%n%(#.💀.  🦦 )%m%b%F{%(#.blue.red)}]─[%f%F{magenta}%d%f%F{red}]%f"$'\n'"%F{red}└╼%f%F{green}[%f%F{yellow}%f%F{yellow} $%f"\n    #esac\n}+g' /home/$id/.zshrc
 }
+#show terminal prompt example
 --prompt-ex(){
 	printf "\n\e[31m┌[\e[36m10.10.14.84\e[31m]─[\e[92mott3rp0p 🦦 htb-1hcye3hbvf\e[31m]─[\e[35m/home/ott3rp0p/my_data\e[31m]
 └╼[\e[33m$\n\n"
