@@ -1,7 +1,7 @@
 # ott3rbox_setup
 🦦 🍭
 
-setup script for pwnbox
+setup script for hack the box's pwnbox
 
 ## use
 ```
