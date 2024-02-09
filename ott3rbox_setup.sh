@@ -64,7 +64,7 @@ id=$(whoami)
 		exit
 	elif [[ $1 =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]
 		then :
-	else printf "not a valid IPv4 format"
+	else printf "target IP is not in a valid IPv4 format"
 	exit	
 	fi
 
