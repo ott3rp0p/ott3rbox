@@ -49,7 +49,7 @@ id=$(whoami)
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
 	printf "#set shell\nset -g default-shell /bin/zsh" > /home/$id/my_data/conf/.tmux.conf
-	cp /home/$id/my_data/ott3rbox/.zshrc > /home/$id/my_data/conf/.zshrc
+	cp /home/$id/my_data/ott3rbox/.zshrc /home/$id/my_data/conf/.zshrc
 }
 
 #configure everything but terminal prompt
