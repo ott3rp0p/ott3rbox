@@ -72,7 +72,7 @@ id=$(whoami)
 	printf "TUN: $(/opt/vpnbash.sh) " > /home/$id/my_data/conf/tun.txt
 	printf "TARGET: $1"  > /home/$id/my_data/conf/target.txt
 	dconf load /org/mate/panel/ < /home/$id/my_data/conf/panel.conf
-	dconf load /org/mate/desktop/background/ < /home/$id/my_data/conf/bg.conf
+	dconf load /org/mate/desktop/ < /home/$id/my_data/conf/bg.conf
 	dconf load /org/mate/terminal/profiles/default/ < /home/$id/my_data/conf/term.conf
 	
 	#start tmux when opening terminal
