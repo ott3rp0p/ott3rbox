@@ -20,7 +20,7 @@ id=$(whoami)
 --help(){
 	printf "🦦 🍭\n\n"
 	if [ -z $1 ] 
-		then printf "\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./pwnbox-setup.sh --help config\nexample:       ./pwnbox-setup.sh --config 10.129.16.182 --tools"
+		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools"
 		exit
 	elif [ $1 == "config" ]
 		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files."
