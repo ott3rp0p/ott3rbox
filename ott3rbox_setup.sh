@@ -43,14 +43,18 @@ id=$(whoami)
 
 #setup files for future use
 --setup(){
-	printf "you will only need to run this the first time. afterwards anytime you start your pwnbox just run --config"
-	mkdir /home/$id/my_data/conf
+	printf "you will only need to run this the first time. afterwards anytime you start your pwnbox just run --config\n\n"
+	printf "creating folder ~/my_data/conf\n"
+	mkdir /home/$id/my_data/conf 2>/dev/null
+	printf "saving mate settings to ~/my_data/conf/*.conf\n"
 	dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.conf
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
-	printf "#set shell\nset -g default-shell /bin/zsh" > /home/$id/my_data/conf/.tmux.conf
+	printf "creating ~/my_data/conf/tmux.conf\n"
+	printf "#set shell\nset -g default-shell /bin/zsh\n" > /home/$id/my_data/conf/.tmux.conf
+	printf "creating ~/my_data/conf/.zshrc\n"
 	cp /home/$id/my_data/ott3rbox/.zshrc /home/$id/my_data/conf/.zshrc
-}
+}}
 
 #configure everything but terminal prompt
 --config(){
