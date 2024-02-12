@@ -96,6 +96,7 @@ id=$(whoami)
 
 #set terminal prompt 
 --conf-prompt(){
+	printf "\nbacking up current .zshrc to ~/my_data/conf/zshrc.old\n\n"
 	cp /home/$id/.zshrc /home/$id/my_data/conf/zshrc.old
 	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zhrc
 }
