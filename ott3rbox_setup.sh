@@ -29,8 +29,11 @@ id=$(whoami)
 	elif [ $1 == "setup" ]
 		then printf "used to save mate settings for terminal/desktop/panel into ~/my_data/conf.\nyou'll only need to run this again if you update some settings that you want to change.\n\n" 
 		exit
-	elif [ $1 == "conf-prompt" ]
-		then printf "configure terminal prompt.\nwill copy old .zsrhc to ~/my_data/conf/zshrc.old\nuse --prompt-ex for an example of what it will look like\n\n"
+	elif [ $1 == "config-prompt" ]
+		then printf "configure terminal prompt.\nwill copy old .zsrhc to ~/my_data/conf/zshrc.old\nuse --ex-prompt for an example of what it will look like\n\n"
+		exit
+	elif [ $1 == "ex-prompt" ]
+		then printf "shows an example of my prompt\n\n"
 		exit
 	elif [ $1 == "tools" ]
 		then printf "download tools from various web locations. review script for exact URIs\nuse --tools-list to view the tools the will be downloaded\n\n"
@@ -95,14 +98,14 @@ id=$(whoami)
 }
 
 #set terminal prompt 
---conf-prompt(){
+--config-prompt(){
 	printf "\nbacking up current .zshrc to ~/my_data/conf/zshrc.old\n\n"
 	cp /home/$id/.zshrc /home/$id/my_data/conf/zshrc.old
 	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zshrc
 }
 
 #show terminal prompt example
---prompt-ex(){
+--ex-prompt(){
 	printf "\n\e[31m┌[\e[36m10.10.14.84\e[31m]─[\e[92mott3rp0p 🦦 htb-1hcye3hbvf\e[31m]─[\e[35m/home/ott3rp0p/my_data\e[31m]
 └╼[\e[33m$\n\n"
 }
