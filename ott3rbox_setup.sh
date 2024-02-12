@@ -52,7 +52,7 @@ id=$(whoami)
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
 	printf "creating ~/my_data/conf/tmux.conf\n"
-	printf "#set shell\nset -g default-shell /bin/zsh\nset -g history-limit 1337000" > /home/$id/my_data/conf/.tmux.conf
+	printf "#set shell\nset -g default-shell /bin/zsh\n\n#set larger buffer \nset -g history-limit 1337000\n\n" > /home/$id/my_data/conf/.tmux.conf
 	printf "creating ~/my_data/conf/.zshrc\n"
 	cp /home/$id/my_data/ott3rbox/.zshrc /home/$id/my_data/conf/.zshrc
 }
