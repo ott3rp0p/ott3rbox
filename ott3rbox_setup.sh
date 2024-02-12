@@ -12,8 +12,8 @@ if [ "$EUID" -eq 0 ]
 fi
 
 #variables
-gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial"
-langList="\n\n\e[36mLanguages:\033[0m\nRust\nRunasCs"
+gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs"
+langList="\n\n\e[36mLanguages:\033[0m\nRust"
 otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui"
 id=$(whoami)
 
