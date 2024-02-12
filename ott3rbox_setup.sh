@@ -14,31 +14,31 @@ fi
 #variables
 gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial"
 langList="\n\n\e[36mLanguages:\033[0m\nRust\nRunasCs"
-otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui"
+otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui\n\n"
 id=$(whoami)
 
 #probably unnecessary help menu with garbage text alignment
 --help(){
 	printf "🦦 🍭\n\n"
 	if [ -z $1 ] 
-		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\ndoesn't work yet\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools\n\n"
+		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools\n\n"
 		exit
 	elif [ $1 == "config" ]
-		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files."
+		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files.\n\n"
 		exit
 	elif [ $1 == "setup" ]
-		then printf "used to save mate settings for terminal/desktop/panel into ~/my_data/conf.\nyou'll only need to run this again if you update some settings that you want to change." 
+		then printf "used to save mate settings for terminal/desktop/panel into ~/my_data/conf.\nyou'll only need to run this again if you update some settings that you want to change.\n\n" 
 		exit
 	elif [ $1 == "conf-prompt" ]
-		then printf "configure terminal prompt.\nwill replace the default so you'll have to redownload .zshrc to revert\nuse --prompt-ex for an example of what it will look like"
+		then printf "configure terminal prompt.\nwill copy old .zsrhc to ~/my_data/conf/zshrc.old\nuse --prompt-ex for an example of what it will look like\n\n"
 		exit
 	elif [ $1 == "tools" ]
-		then printf "download tools from various web locations. review script for exact URIs\nuse --tools-list to view the tools the will be downloaded"
+		then printf "download tools from various web locations. review script for exact URIs\nuse --tools-list to view the tools the will be downloaded\n\n"
 		exit
 	elif [ $1 == "otter" ]
-		then printf "otter time"
+		then printf "otter time\n\n"
 		exit
-	else printf "no help menu for \"$1\""
+	else printf "no help menu for \"$1\"\n\n"
 	fi
 }
 
@@ -95,9 +95,10 @@ id=$(whoami)
 }
 
 #set terminal prompt 
-#--conf-prompt(){
-#	sed -i 's+configure_prompt().*}+configure_prompt() {\n    #case\n            PROMPT="%F{red}┌%f%F{red}[%f%F{cyan}%D{$(/opt/vpnbash.sh)}%f%F{red}]─[%B%F{%(#.red.green)}%n%(#.💀.  🦦 )%m%b%F{%(#.blue.red)}]─[%f%F{magenta}%d%f%F{red}]%f"$'\n'"%F{red}└╼%f%F{green}[%f%F{yellow}%f%F{yellow} $%f"\n    #esac\n}+g' /home/$id/.zshrc
-#}
+--conf-prompt(){
+	cp /home/$id/.zshrc /home/$id/my_data/conf/zshrc.old
+	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zhrc
+}
 
 #show terminal prompt example
 --prompt-ex(){
