@@ -12,8 +12,8 @@ if [ "$EUID" -eq 0 ]
 fi
 
 #variables
-gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs"
-langList="\n\n\e[36mLanguages:\033[0m\nRust"
+gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial"
+langList="\n\n\e[36mLanguages:\033[0m\nRust\nRunasCs"
 otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui"
 id=$(whoami)
 
@@ -43,18 +43,21 @@ id=$(whoami)
 }
 
 #setup files for future use
+#uncomment line to save settings instead of using provided file
 --setup(){
 	printf "you will only need to run this the first time. afterwards anytime you start your pwnbox just run --config\n\n"
 	printf "creating folder ~/my_data/conf\n"
 	mkdir /home/$id/my_data/conf 2>/dev/null
 	printf "saving mate settings to ~/my_data/conf/*.conf\n"
-	dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.conf
+	cp /home/$id/ott3rbox/panel.conf /home/$id/my_data/conf/panel.conf
+	sed -i "s+changeme+$id+g" /home/$id/my_data/conf/panel.conf
+	#dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.conf
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
 	printf "creating ~/my_data/conf/tmux.conf\n"
-	printf "#set shell\nset -g default-shell /bin/zsh\n\n#set larger buffer \nset -g history-limit 1337000\n\n" > /home/$id/my_data/conf/.tmux.conf
+	cp /home/$id/my_data/ott3rbox/tmux.conf /home/$id/my_data/conf/.tmux.conf
 	printf "creating ~/my_data/conf/.zshrc\n"
-	cp /home/$id/my_data/ott3rbox/.zshrc /home/$id/my_data/conf/.zshrc
+	cp /home/$id/my_data/ott3rbox/zshrc /home/$id/my_data/conf/.zshrc
 }
 
 #configure everything but terminal prompt
@@ -66,7 +69,7 @@ id=$(whoami)
 	elif [[ $1 =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]
 		then :
 	else printf "target IP is not in a valid IPv4 format"
-	exit	
+		exit	
 	fi
 
 	#configure appearance of panel/terminal/background
@@ -80,8 +83,8 @@ id=$(whoami)
 	printf '\nif command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then\nexec tmux\nfi' >> /home/$id/.bashrc
 
 	#copy conf files to home directory
-	cp /home/$id/my_data/conf/.zshrc /home/$id/.
-	cp /home/$id/my_data/conf/.tmux.conf /home/$id/.
+	cp /home/$id/my_data/conf/.zshrc /home/$id/.zshrc
+	cp /home/$id/my_data/conf/.tmux.conf /home/$id/.tmux.conf
 
 	if [[ $2 == "--tools" ]]
 		then --tools
@@ -142,4 +145,5 @@ $1 $2 $3
 
 if [ -z $1 ]
 	then --help
+	exit
 fi
