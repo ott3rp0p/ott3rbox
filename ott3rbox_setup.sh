@@ -49,7 +49,7 @@ id=$(whoami)
 	printf "creating folder ~/my_data/conf\n"
 	mkdir /home/$id/my_data/conf 2>/dev/null
 	printf "saving mate settings to ~/my_data/conf/*.conf\n"
-	cp /home/$id/ott3rbox/panel.conf /home/$id/my_data/conf/panel.conf
+	cp /home/$id/my_data/ott3rbox/panel.conf /home/$id/my_data/conf/panel.conf
 	sed -i "s+changeme+$id+g" /home/$id/my_data/conf/panel.conf
 	#dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.conf
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
@@ -98,7 +98,7 @@ id=$(whoami)
 --conf-prompt(){
 	printf "\nbacking up current .zshrc to ~/my_data/conf/zshrc.old\n\n"
 	cp /home/$id/.zshrc /home/$id/my_data/conf/zshrc.old
-	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zhrc
+	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zshrc
 }
 
 #show terminal prompt example
