@@ -17,11 +17,11 @@ langList="\n\n\e[36mLanguages:\033[0m\nRust"
 otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui\n\n"
 id=$(whoami)
 
-#probably unnecessary help menu with garbage text alignment
+#probably unnecessary help menu
 --help(){
 	printf "🦦 🍭\n\n"
 	if [ -z $1 ] 
-		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download tools. use --tools-list to only list tools\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools\n\n"
+		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--conf-prompt:  use my terminal prompt. shows IP/User/Host/PWD\n--prompt-ex:    show example of promp appearance \n--tools:        download all tools\n--list:         list all tools to be downloaded\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools --config-prompt\n\n"
 		exit
 	elif [ $1 == "config" ]
 		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files.\n\n"
@@ -36,7 +36,10 @@ id=$(whoami)
 		then printf "shows an example of my prompt\n\n"
 		exit
 	elif [ $1 == "tools" ]
-		then printf "download tools from various web locations. review script for exact URIs\nuse --tools-list to view the tools the will be downloaded\n\n"
+		then printf "download tools from various web locations. review script for exact URIs\n\n"
+		exit
+	elif [ $1 == "list" ]
+		then printf "list tools to be downloaded\n\n"
 		exit
 	elif [ $1 == "otter" ]
 		then printf "otter time\n\n"
@@ -51,12 +54,12 @@ id=$(whoami)
 	printf "you will only need to run this the first time. afterwards anytime you start your pwnbox just run --config\n\n"
 	printf "creating folder ~/my_data/conf\n"
 	mkdir /home/$id/my_data/conf 2>/dev/null
-	printf "saving mate settings to ~/my_data/conf/*.conf\n"
-	cp /home/$id/my_data/ott3rbox/panel.conf /home/$id/my_data/conf/panel.conf
-	sed -i "s+changeme+$id+g" /home/$id/my_data/conf/panel.conf
-	#dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.conf
-	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.conf
-	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.conf
+	printf "creating files ~/my_data/conf/*.mate\n"
+	cp /home/$id/my_data/ott3rbox/panel.mate /home/$id/my_data/conf/panel.mate
+	#dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.mate
+	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.mate
+	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.mate
+	sed -i "s+changeme+$id+g" /home/$id/my_data/conf/panel.mate
 	printf "creating ~/my_data/conf/tmux.conf\n"
 	cp /home/$id/my_data/ott3rbox/tmux.conf /home/$id/my_data/conf/.tmux.conf
 	printf "creating ~/my_data/conf/.zshrc\n"
@@ -66,6 +69,7 @@ id=$(whoami)
 #configure everything but terminal prompt
 --config(){
 	#validate IPv4 format
+	var1=$1 var2=$2 var3=$3
 	if [ -z $1 ]
 		then printf "needs a target IP"
 		exit
@@ -78,9 +82,9 @@ id=$(whoami)
 	#configure appearance of panel/terminal/background
 	printf "TUN: $(/opt/vpnbash.sh) " > /home/$id/my_data/conf/tun.txt
 	printf "TARGET: $1"  > /home/$id/my_data/conf/target.txt
-	dconf load /org/mate/panel/ < /home/$id/my_data/conf/panel.conf
-	dconf load /org/mate/desktop/ < /home/$id/my_data/conf/bg.conf
-	dconf load /org/mate/terminal/profiles/default/ < /home/$id/my_data/conf/term.conf
+	dconf load /org/mate/panel/ < /home/$id/my_data/conf/panel.mate
+	dconf load /org/mate/desktop/ < /home/$id/my_data/conf/bg.mate
+	dconf load /org/mate/terminal/profiles/default/ < /home/$id/my_data/conf/term.mate
 	
 	#start tmux when opening terminal
 	printf '\nif command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then\nexec tmux\nfi' >> /home/$id/.bashrc
@@ -88,19 +92,18 @@ id=$(whoami)
 	#copy conf files to home directory
 	cp /home/$id/my_data/conf/.zshrc /home/$id/.zshrc
 	cp /home/$id/my_data/conf/.tmux.conf /home/$id/.tmux.conf
+	tmux source /home/$id/.tmux.conf
 
 	if [[ $2 == "--tools" ]]
 		then --tools
-	elif [[ $2 == "--tools-list" ]]
-		then --tools-list
-	else exit
-	fi 
+	fi
 }
 
 #set terminal prompt 
 --config-prompt(){
 	printf "\nbacking up current .zshrc to ~/my_data/conf/zshrc.old\n\n"
 	cp /home/$id/.zshrc /home/$id/my_data/conf/zshrc.old
+	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/my_data/conf/.zshrc
 	cp /home/$id/my_data/ott3rbox/zshrcprompt /home/$id/.zshrc
 }
 
@@ -116,12 +119,11 @@ id=$(whoami)
 }
 
 #list tools
---tools-list(){
+--list(){
 	printf "\neverything listed will be downloaded. #comment out in script to ignore certain repos.\n"
 	printf "$gitList"
 	printf "$langList"
 	printf "$otherTools"
-	exit
 }
 
 #download tools
@@ -144,9 +146,12 @@ id=$(whoami)
 	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
 	wget https://github.com/antonioCoco/RunasCs/releases/latest/download/RunasCs.zip -O /opt/tools/RunasCs/RunasCs.zip;cd /opt/tools/RunasCs/; unzip RunasCs.zip
+	if [[ $var3 == "--config-prompt" ]]
+		then --config-prompt
+	fi
 }
 
-$1 $2 $3 
+$1 $2 $3 $4 $5
 
 if [ -z $1 ]
 	then --help
