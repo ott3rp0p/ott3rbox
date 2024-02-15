@@ -14,7 +14,7 @@ fi
 #variables
 gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs"
 langList="\n\n\e[36mLanguages:\033[0m\nRust"
-otherTools="\n\n\e[36mOther Stuff:\033[0m\njd-gui\n\n"
+otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n\n"
 id=$(whoami)
 
 #probably unnecessary help menu
@@ -27,7 +27,7 @@ id=$(whoami)
 		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from ~my_data/conf after --setup creates the files.\n\n"
 		exit
 	elif [ $1 == "setup" ]
-		then printf "used to save mate settings for terminal/desktop/panel into ~/my_data/conf.\nyou'll only need to run this again if you update some settings that you want to change.\n\n" 
+		then printf "save mate settings for terminal/desktop/panel\nwill also save firefox bookmarks\n\nyou'll only need to run this again if you update some settings \nthat you want to save for future pwnbox instances.\n\n" 
 		exit
 	elif [ $1 == "config-prompt" ]
 		then printf "configure terminal prompt.\nwill copy old .zsrhc to ~/my_data/conf/zshrc.old\nuse --ex-prompt for an example of what it will look like\n\n"
@@ -55,15 +55,21 @@ id=$(whoami)
 	printf "creating folder ~/my_data/conf\n"
 	mkdir /home/$id/my_data/conf 2>/dev/null
 	printf "creating files ~/my_data/conf/*.mate\n"
+	
+	#dump/copy mate preferences
 	cp /home/$id/my_data/ott3rbox/panel.mate /home/$id/my_data/conf/panel.mate
-	#dconf dump /org/mate/panel/ > /home/$id/my_data/conf/panel.mate
 	dconf dump /org/mate/desktop/ > /home/$id/my_data/conf/bg.mate
 	dconf dump /org/mate/terminal/profiles/default/ > /home/$id/my_data/conf/term.mate
 	sed -i "s+changeme+$id+g" /home/$id/my_data/conf/panel.mate
+	
+	#copy example files
 	printf "creating ~/my_data/conf/tmux.conf\n"
 	cp /home/$id/my_data/ott3rbox/tmux.conf /home/$id/my_data/conf/.tmux.conf
 	printf "creating ~/my_data/conf/.zshrc\n"
 	cp /home/$id/my_data/ott3rbox/zshrc /home/$id/my_data/conf/.zshrc
+	
+	#backup firefox bookmarks
+	sqlite3 /home/$id/.mozilla/firefox/*.default-esr/places.sqlite ".backup /home/$id/my_data/conf/firefox.bookmarks"
 }
 
 #configure everything but terminal prompt
@@ -93,6 +99,9 @@ id=$(whoami)
 	cp /home/$id/my_data/conf/.zshrc /home/$id/.zshrc
 	cp /home/$id/my_data/conf/.tmux.conf /home/$id/.tmux.conf
 	tmux source /home/$id/.tmux.conf
+
+	#restore firefox bookmarks
+	sqlite3 /home/$id/.mozilla/firefox/*.default-esr/places.sqlite ".restore /home/$id/my_data/conf/firefox.bookmarks"
 
 	if [[ $2 == "--tools" ]]
 		then --tools
@@ -146,6 +155,16 @@ id=$(whoami)
 	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
 	wget https://github.com/antonioCoco/RunasCs/releases/latest/download/RunasCs.zip -O /opt/tools/RunasCs/RunasCs.zip;cd /opt/tools/RunasCs/; unzip RunasCs.zip
+	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
+    aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    sudo apt install dirmngr ca-certificates gnupg
+	sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+	echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+	sudo apt update
+	sudo apt install mono-devel --yes
+	sudo apt-get install docker.io docker-compose-plugin --yes
+	clear; printf "\nall downloads will be in /opt/tools/\n"
+
 	if [[ $var3 == "--config-prompt" ]]
 		then --config-prompt
 	fi
