@@ -57,24 +57,25 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 #uncomment line to save settings instead of using provided file
 --setup(){
 	read -p $'Provide the folder path for conf files. \nPress enter for default:  ' -i "/home/$id/my_data/ " -e workFolder
-	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use %sconf/ott3rbox_setup.sh --config\n\n" $workFolder
+	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use\n%sconf/ott3rbox_setup.sh --config\n\n\n" $workFolder
 
 	printf "creating workFolder %sconf" $workFolder
 	mkdir $workFolder/conf 2>/dev/null
 
 	#moving script
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
-	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh
+	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh;chmod +x $workFolder/conf/ott3rbox_setup.sh
 	cp $scriptDirectory/conf.txt $workFolder/conf/conf.txt
 	sed -i "s+workFolder=workFolder+workFolder=$workFolder+g" $workFolder/conf/ott3rbox_setup.sh
+	sed -i "s+changeme+$workFolder+g" $workFolder/conf/conf.txt
 	
 	#dump/copy mate preferences
 	printf "creating files %sconf/*.mate\n" $workFolder
-	awk '/aaaa/{flag=1;next}/bbbb/{flag=0}flag' $scriptDirectory/conf.txt > $workFolder/conf/panel.mate
+	awk '/aaaa/{flag=1;next}/bbbb/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/panel.mate
 	dconf dump /org/mate/desktop/ > $workFolder/conf/bg.mate
-	awk '/iiii/{flag=1;next}/jjjj/{flag=0}flag' $scriptDirectory/conf.txt > $workFolder/conf/term.mate
+	awk '/iiii/{flag=1;next}/jjjj/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/term.mate
 	#dconf dump /org/mate/terminal/profiles/default/ > $workFolder/conf/term.mate
-	sed -i "s+changeme+$workFolder+g" $workFolder/conf/conf.txt
+	
 	
 	#copy example files
 	printf "creating %sconf/tmux.conf\n" $workFolder
@@ -83,6 +84,8 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	awk '/eeee/{flag=1;next}/ffff/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/.zshrc
 	
 	#backup firefox bookmarks
+	printf "exporting firefox bookmarks to %sconf/firefox.bookmarks" workFolder
+	mv $workFolder/conf/firefox.bookmarks $workFolder/conf/firefox.bookmarks.old
 	sqlite3 /home/$id/.mozilla/firefox/*.default-esr/places.sqlite ".backup $workFolder/conf/firefox.bookmarks"
 
 }
@@ -101,7 +104,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	fi
 
 	#configure appearance of panel/terminal/background
-	printf "TARGET: $1"  > $workFolder/conf/data.txt
+	printf "TARGET: $1\n"  > $workFolder/conf/data.txt
 	ip a |awk '/tun/ && /inet/ {print "TUN: "$2;exit}' >> $workFolder/conf/data.txt
 	dconf load /org/mate/panel/ < $workFolder/conf/panel.mate
 	dconf load /org/mate/desktop/ < $workFolder/conf/bg.mate
@@ -159,6 +162,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	printf "$gitList"
 	printf "$langList"
 	printf "$otherTools"
+	exit
 }
 
 #download tools
@@ -210,6 +214,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	if [[ $var3 == "--prompt" ]]
 		then --prompt
 	fi
+	exit
 }
 
 $1 $2 $3 $4 $5
