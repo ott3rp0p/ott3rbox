@@ -60,7 +60,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use\n%sconf/ott3rbox_setup.sh --config\n\n\n" $workFolder
 
 	printf "creating workFolder %sconf" $workFolder
-	mkdir $workFolder/conf 2>/dev/null
+	mkdir -p $workFolder/conf 2>/dev/null
 
 	#moving script
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
