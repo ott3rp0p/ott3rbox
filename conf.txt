@@ -79,7 +79,7 @@ position=1385
 toplevel-id='top'
 
 [objects/object-7/prefs]
-command="awk '/TUN/'  changeme/conf/conf.txt"
+command="awk '/TUN/'  changeme/conf/data.txt"
 
 [objects/object-8]
 applet-iid='CommandAppletFactory::CommandApplet'
@@ -89,7 +89,7 @@ position=1250
 toplevel-id='top'
 
 [objects/object-8/prefs]
-command="awk '/TARGET/'  changeme/conf/conf.txt"
+command="awk '/TARGET/'  changeme/conf/data.txt"
 
 [objects/object-9]
 object-type='separator'
