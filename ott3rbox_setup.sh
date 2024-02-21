@@ -2,7 +2,7 @@
 #should this be a bash script? probably not.
 #hack the box pwnbox setup. save in ~/my_data for future use
 #change the workFolder variable if you want to use a different workFolder or to use this script outside of pwnbox
-#sudo will set the wrong home directory. plus pwnbox has (ALL) NOPASSWD: ALL set so you shouldn't need it.
+#run setup and then use the script that gets copied for configuration.
 #ott3rp0p
 
 
@@ -14,7 +14,7 @@ fi
 
 #variables
 id=$(whoami)
-workFolder="/home/$id/my_data/"
+workFolder=workFolder
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
 gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs"
@@ -35,7 +35,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 		then printf "save mate settings for terminal/desktop/panel\nwill also save firefox bookmarks\n\nyou'll only need to run this again if you update some settings \nthat you want to save for future pwnbox instances.\n\n" 
 		exit
 	elif [ $1 == "prompt" ]
-		then printf "configure terminal prompt.\nwill copy old .zsrhc to $workFolder/conf/zshrc.old\nuse --ex-prompt for an example of what it will look like\n\n"
+		then printf "configure terminal prompt.\nwill copy old .zsrhc to %sconf/zshrc.old\nuse --ex-prompt for an example of what it will look like\n\n" $workFolder
 		exit
 	elif [ $1 == "ex-prompt" ]
 		then printf "shows an example of my prompt\n\n"
@@ -56,20 +56,20 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 #setup files for future use
 #uncomment line to save settings instead of using provided file
 --setup(){
-	printf "you will only need to run this the first time. afterwards anytime you start your pwnbox just run --config\n\n"
 	read -p $'Provide the folder path for conf files. \nPress enter for default:  ' -i "/home/$id/my_data/ " -e workFolder
+	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use %sconf/ott3rbox_setup.sh --config\n\n" $workFolder
 
-	printf "creating workFolder $workFolder/conf\n"
+	printf "creating workFolder %sconf" $workFolder
 	mkdir $workFolder/conf 2>/dev/null
 
 	#moving script
-	printf "\ncopying otterbox_setup.sh to %sconf\n", $workFolder
+	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
 	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh
 	cp $scriptDirectory/conf.txt $workFolder/conf/conf.txt
-	sed -i 's+workFolder=workFolder+workFolder=$workFolder+g' $workFolder/ott3rbox_setup.sh
+	sed -i "s+workFolder=workFolder+workFolder=$workFolder+g" $workFolder/conf/ott3rbox_setup.sh
 	
 	#dump/copy mate preferences
-	printf "creating files %sconf/*.mate\n", $workFolder
+	printf "creating files %sconf/*.mate\n" $workFolder
 	awk '/aaaa/{flag=1;next}/bbbb/{flag=0}flag' $scriptDirectory/conf.txt > $workFolder/conf/panel.mate
 	dconf dump /org/mate/desktop/ > $workFolder/conf/bg.mate
 	awk '/iiii/{flag=1;next}/jjjj/{flag=0}flag' $scriptDirectory/conf.txt > $workFolder/conf/term.mate
@@ -77,9 +77,9 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	sed -i "s+changeme+$workFolder+g" $workFolder/conf/conf.txt
 	
 	#copy example files
-	printf "creating %sconf/tmux.conf\n", $workFolder
+	printf "creating %sconf/tmux.conf\n" $workFolder
 	awk '/cccc/{flag=1;next}/dddd/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/.tmux.conf
-	printf "creating %sconf/.zshrc\n", $workFolder
+	printf "creating %sconf/.zshrc\n" $workFolder
 	awk '/eeee/{flag=1;next}/ffff/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/.zshrc
 	
 	#backup firefox bookmarks
@@ -101,14 +101,14 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	fi
 
 	#configure appearance of panel/terminal/background
-	printf "\nTUN: $(/opt/vpnbash.sh) " >> $workFolder/conf/data.txt
-	printf "\nTARGET: $1"  >> $workFolder/conf/data.txt
+	printf "TARGET: $1"  > $workFolder/conf/data.txt
+	ip a |awk '/tun/ && /inet/ {print "TUN: "$2;exit}' >> $workFolder/conf/data.txt
 	dconf load /org/mate/panel/ < $workFolder/conf/panel.mate
 	dconf load /org/mate/desktop/ < $workFolder/conf/bg.mate
 	dconf load /org/mate/terminal/profiles/default/ < $workFolder/conf/term.mate
 	
 	#start tmux when opening terminal
-	printf '\nif command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then\nexec tmux\nfi' >> .bashrc
+	printf '\nif command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then\nexec tmux\nfi' >> /home/$id/.bashrc
 
 	#copy conf files to home directory
 	cp $workFolder/conf/.zshrc /home/$id/.zshrc
@@ -130,12 +130,13 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	if [[ $2 == "--tools" ]]
 		then --tools
 	fi
+	exit
 }
 
 #set terminal prompt 
 --prompt(){
-	printf "\nbacking up current .zshrc to %sconf/zshrc.old\n\n", $workFolder
-	cp .zshrc $workFolder/conf/zshrc.old
+	printf "\nbacking up current .zshrc to %sconf/zshrc.old\n\n" $workFolder
+	cp /home/$id/.zshrc $workFolder/conf/zshrc.old
 	awk '/gggg/{flag=1;next}/hhhh/{flag=0}flag' $workFolder/conf/conf.txt > /home/$id/.zshrc
 	exit
 }
@@ -149,6 +150,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 #print an otter
 --otter(){
 	printf "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒████████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████████▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒██▓▓▓▓██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██▓▓▓▓██▒▒▒▒▒▒\n▒▒▒▒██▓▓▓▓██▒▒▒▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▒▒▒▒██▓▓▓▓██▒▒▒▒\n▒▒▒▒██▓▓██▒▒▒▒▓▓████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒████████▓▓▒▒▒▒██▓▓██▒▒▒▒\n▒▒▒▒██▓▓██▒▒▒▒██  ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██  ██████▒▒▒▒██▓▓██▒▒▒▒\n▒▒▒▒▒▒██▒▒▒▒▒▒██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████████▒▒▒▒▒▒██▒▒▒▒▒▒\n▒▒▒▒▒▒██▒▒▒▒▒▒▓▓██████▒▒▒▒▓▓████████▓▓▒▒▒▒██████▓▓▒▒▒▒▒▒██▒▒▒▒▒▒\n▒▒▒▒▒▒██▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▓▓████  ██████▓▓▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒██▒▒▒▒▒▒\n▒▒▒▒▒▒██▒▒    ▒▒▒▒▒▒▒▒▓▓████  ██████████▓▓▒▒▒▒▒▒▒▒    ▒▒██▒▒▒▒▒▒\n▒▒▒▒▒▒██░░░░░░░░▒▒▒▒▒▒████████████████████▒▒▒▒▒▒░░░░░░░░██▒▒▒▒▒▒\n▒▒▒▒▒▒██░░░░░░░░░░▒▒▒▒████████████████████▒▒▒▒  ░░░░░░░░██▒▒▒▒▒▒\n▒▒▒▒▒▒██░░░░  ░░▒▒▒▒░░▒▒████████████████▒▒░░▒▒▒▒░░    ░░██▒▒▒▒▒▒\n▒▒▒▒▒▒██            ░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ░░          ░░██▒▒▒▒▒▒\n▒▒▒▒▒▒    ▒▒▒▒▒▒░░░░  ░░░░            ░░░░  ░░  ▒▒▒▒▒▒    ▒▒▒▒▒▒\n▒▒    ▒▒██▒▒      ░░░░░░░░████████████░░░░░░░░      ▒▒██▒▒    ▒▒\n  ▒▒▒▒▒▒    ▒▒▒▒░░░░▒▒▒▒██▓▓▓▓▓▓▓▓▓▓▓▓██▒▒▒▒░░░░▒▒▒▒    ▒▒▒▒▒▒  \n▒▒▒▒    ▒▒██▒▒▒▒▒▒▒▒████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▒▒▒▒▒▒▒▒██▒▒    ▒▒▒▒\n▒▒  ▒▒▒▒▒▒▒▒██▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒██▒▒▒▒▒▒▒▒  ▒▒\n▒▒▒▒▒▒▒▒▒▒▒▒▒▒██████████▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓██████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒▒▒██▓▓▓▓▓▓▓▓▓▓████████████████▓▓▓▓▓▓▓▓▒▒██▒▒▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒▒▒██▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒██▒▒▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒██▒▒░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒  ░░▒▒██▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒██▒▒░░░░▒▒▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░░░░░▒▒██▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒▒▒██▒▒░░░░  ▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▓▒▒  ▒▒▓▓██▒▒▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒██▓▓▓▓▒▒░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▒▒  ░░▒▒▓▓▓▓██▒▒▒▒▒▒▒▒\n▒▒▒▒▒▒▒▒██▓▓▓▓▒▒░░  ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓░░  ░░░░  ▒▒▓▓██▒▒▒▒▒▒▒▒"
+	exit
 }
 
 #list tools
