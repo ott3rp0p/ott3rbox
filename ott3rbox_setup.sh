@@ -123,11 +123,11 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 
 	#set aws test keys
 	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
-    aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+ 	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
-    #fix apache2. this may be fixed in later versions of pwnbox since academy requires it.
-    sudo sed -i '1i Servername localhost' /etc/apache2/apache2.conf 2>/dev/null
-    sudo sed -i 's/Listen 80/Listen 8811/g' /etc/apache2/ports.conf 2>/dev/null
+	#fix apache2. this may be fixed in later versions of pwnbox since academy requires it.
+ 	sudo sed -i '1i Servername localhost' /etc/apache2/apache2.conf 2>/dev/null
+  	sudo sed -i 's/Listen 80/Listen 8811/g' /etc/apache2/ports.conf 2>/dev/null
 
 
 	if [[ $2 == "--tools" ]]
@@ -208,7 +208,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	sh .vim_runtime/install_awesome_vimrc.sh
 
 	#finish
-    clear; printf "\nall downloads will be in /opt/tools/\n"
+ 	clear; printf "\nall downloads will be in /opt/tools/\n"
   
 
 	if [[ $var3 == "--prompt" ]]
