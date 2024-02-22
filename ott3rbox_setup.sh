@@ -17,7 +17,7 @@ id=$(whoami)
 workFolder=workFolder
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
-gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs"
+gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng"
 langList="\n\n\e[36mLanguages:\033[0m\nRust"
 otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n\n"
 
@@ -60,7 +60,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use\n%sconf/ott3rbox_setup.sh --config\n\n\n" $workFolder
 
 	printf "creating workFolder %sconf" $workFolder
-	mkdir $workFolder/conf 2>/dev/null
+	mkdir -p $workFolder/conf 2>/dev/null
 
 	#moving script
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
@@ -171,7 +171,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 
 	#make directories
 	sudo mkdir /opt/tools;sudo chown $(whoami) /opt/tools;sudo chgrp $(whoami) /opt/tools
-	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs
+	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse
 
 	#apt
 	sudo apt update --yes
@@ -202,6 +202,10 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	wget https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar -O /opt/tools/ysoserial/ysoserial-all.jar
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
 	wget https://github.com/antonioCoco/RunasCs/releases/latest/download/RunasCs.zip -O /opt/tools/RunasCs/RunasCs.zip;cd /opt/tools/RunasCs/; unzip RunasCs.zip
+	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh -O /opt/tools/peass/linpeas.sh
+	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.exe -O /opt/tools/peass/winpeasany.exe
+	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.bat -O /opt/tools/peass/winpeas.bat
+	wget https://github.com/byronkg/SharpGPOAbuse/releases/latest/download/SharpGPOAbuse.exe -O /opt/tools/SharpGPOAbuse/SharpGPOAbuse.exe
 
 	#github other
 	git clone --depth=1 https://github.com/amix/vimrc.git .vim_runtime
