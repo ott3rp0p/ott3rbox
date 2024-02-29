@@ -2,7 +2,7 @@
 #should this be a bash script? probably not.
 #hack the box pwnbox setup. save in ~/my_data for future use.
 #primarily made for hackthebox's pwnbox. could be used elsewhere with very minimal tweaking.
-#run setup and then use the script that gets copied for configuration.
+#run --setup and then use the script in the folder you provide for configuration.
 #ott3rp0p
 
 
@@ -17,9 +17,10 @@ id=$(whoami)
 workFolder=workFolder
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
-gitList="\n\e[36mGithub Tools:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nphpwebshelllimited\nmarshalsec\nysoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng"
+penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel"
 langList="\n\n\e[36mLanguages:\033[0m\nRust"
-otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n\n"
+forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework"
+otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\nAwesomeVIM\n\n"
 
 
 #probably unnecessary help menu
@@ -60,7 +61,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use\n%sconf/ott3rbox_setup.sh --config\n\n\n" $workFolder
 
 	printf "creating workFolder %sconf" $workFolder
-	mkdir -p $workFolder/conf 2>/dev/null
+	mkdir $workFolder/conf 2>/dev/null
 
 	#moving script
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
@@ -76,7 +77,6 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	awk '/iiii/{flag=1;next}/jjjj/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/term.mate
 	#dconf dump /org/mate/terminal/profiles/default/ > $workFolder/conf/term.mate
 	
-	
 	#copy example files
 	printf "creating %sconf/tmux.conf\n" $workFolder
 	awk '/cccc/{flag=1;next}/dddd/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/.tmux.conf
@@ -84,7 +84,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	awk '/eeee/{flag=1;next}/ffff/{flag=0}flag' $workFolder/conf/conf.txt > $workFolder/conf/.zshrc
 	
 	#backup firefox bookmarks
-	printf "exporting firefox bookmarks to %sconf/firefox.bookmarks" workFolder
+	printf "exporting firefox bookmarks to %sconf/firefox.bookmarks" $workFolder
 	mv $workFolder/conf/firefox.bookmarks $workFolder/conf/firefox.bookmarks.old
 	sqlite3 /home/$id/.mozilla/firefox/*.default-esr/places.sqlite ".backup $workFolder/conf/firefox.bookmarks"
 
@@ -121,10 +121,6 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	#restore firefox bookmarks
 	sqlite3 /home/$id/.mozilla/firefox/*.default-esr/places.sqlite ".restore $workFolder/conf/firefox.bookmarks"
 
-	#set aws test keys
-	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
- 	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-
 	#fix apache2. this may be fixed in later versions of pwnbox since academy requires it.
  	sudo sed -i '1i Servername localhost' /etc/apache2/apache2.conf 2>/dev/null
   	sudo sed -i 's/Listen 80/Listen 8811/g' /etc/apache2/ports.conf 2>/dev/null
@@ -159,9 +155,10 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 #list tools
 --list(){
 	printf "\neverything listed will be downloaded. #comment out in script to ignore certain repos.\n"
-	printf "$gitList"
+	printf "$penList"
+	printf "$forenList"
 	printf "$langList"
-	printf "$otherTools"
+	printf "$otherStuff"
 	exit
 }
 
@@ -173,7 +170,7 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	sudo mkdir /opt/tools;sudo chown $(whoami) /opt/tools;sudo chgrp $(whoami) /opt/tools
 	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse
 
-	#apt
+	#otherStuff
 	sudo apt update --yes
 	sudo apt install dirmngr ca-certificates gnupg
 	sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
@@ -181,13 +178,20 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	sudo apt update
 	sudo apt install mono-devel --yes
 	sudo apt-get install docker.io docker-compose-plugin --yes
+	#set aws test keys
+	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
+ 	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+	git clone --depth=1 https://github.com/amix/vimrc.git .vim_runtime
+	sh .vim_runtime/install_awesome_vimrc.sh
 
 	#might hang on this. comment out if unneeded 
 	#searchsploit -u
 
-	#github tools
+	#langList
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	source "$HOME/.cargo/env"
+
+	#gitList
 	cargo install x8
 	pipx install git+https://github.com/Pennyw0rth/NetExec
 	git clone https://github.com/danielmiessler/SecLists.git /opt/tools/SecLists
@@ -197,7 +201,9 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	git clone https://github.com/carlospolop/phpwebshelllimited.git /opt/tools/phpwebshelllimited
 	git clone https://github.com/mbechler/marshalsec /opt/tools/marshalsec;cd /opt/tools/marshalsec; mvn clean package -DskipTests
 	git clone https://github.com/frohoff/ysoserial.git /opt/tools/ysoserial
-	
+	git clone https://github.com/The-Viper-One/PsMapExec.git /opt/tools/PsMapExec
+	git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /opt/tools/wwwolf-php-webshell
+	git clone https://github.com/jpillora/chisel.git /opt/tools/chisel
 
 	wget https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar -O /opt/tools/ysoserial/ysoserial-all.jar
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
@@ -206,13 +212,18 @@ otherTools="\n\n\e[36mOther Stuff:\033[0m\nmono\ndocker\nset AWS CLI test keys\n
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.exe -O /opt/tools/peass/winpeasany.exe
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.bat -O /opt/tools/peass/winpeas.bat
 	wget https://github.com/byronkg/SharpGPOAbuse/releases/latest/download/SharpGPOAbuse.exe -O /opt/tools/SharpGPOAbuse/SharpGPOAbuse.exe
+	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .
+	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /opt/tools/chisel/linux.gz;cd /opt/tools/chisel;gunzip linux.gz
+	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_windows_amd64.gz -O /opt/tools/chisel/windows.gz;gunzip windows.gz
 
-	#github other
-	git clone --depth=1 https://github.com/amix/vimrc.git .vim_runtime
-	sh .vim_runtime/install_awesome_vimrc.sh
+	#forenList
+	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
+	git clone https://github.com/DidierStevens/DidierStevensSuite.git /opt/tools/DidierStevensSuite
+	git clone https://github.com/volatilityfoundation/volatility3.git /opt/tools/volatility3;cd /opt/tools/volatility3;pip3 install -r requirements.txt
+	pip3 install vivisect
 
 	#finish
- 	clear; printf "\nall downloads will be in /opt/tools/\n"
+ 	printf "\nall downloads will be in /opt/tools/\n"
   
 
 	if [[ $var3 == "--prompt" ]]
