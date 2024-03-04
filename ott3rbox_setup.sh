@@ -17,8 +17,9 @@ id=$(whoami)
 workFolder=workFolder
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
-penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel"
-langList="\n\n\e[36mLanguages:\033[0m\nRust"
+var1=$1 var2=$2 var3=$3
+penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel\nTInjA"
+langList="\n\n\e[36mLanguages:\033[0m\nRust\nUpdate Go"
 forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework"
 otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\nAwesomeVIM\n\n"
 
@@ -93,7 +94,6 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 #configure everything but terminal prompt
 --config(){
 	#validate IPv4 format
-	var1=$1 var2=$2 var3=$3
 	if [ -z $1 ]
 		then printf "needs a target IP"
 		exit
@@ -126,8 +126,10 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
   	sudo sed -i 's/Listen 80/Listen 8811/g' /etc/apache2/ports.conf 2>/dev/null
 
 
-	if [[ $2 == "--tools" ]]
+	if [[ $var2 == "--tools" ]]
 		then --tools
+	elif [[ $var2 == "--prompt" ]]
+		then --prompt
 	fi
 	exit
 }
@@ -166,6 +168,9 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 #comment out unwanted tools as needed
 --tools(){
 
+	#prompts keychain
+	pip3 install vivisect
+
 	#make directories
 	sudo mkdir /opt/tools;sudo chown $(whoami) /opt/tools;sudo chgrp $(whoami) /opt/tools
 	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse
@@ -190,9 +195,14 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	#langList
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	source "$HOME/.cargo/env"
+	sudo apt-get remove golang-go --yes
+	sudo apt-get remove --auto-remove golang-go --yes 
+	wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz -O /tmp/go1.22.0.linux-amd64.tar.gz;cd /tmp
+	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
 
 	#gitList
 	cargo install x8
+	go install -v github.com/Hackmanit/TInjA@latest
 	pipx install git+https://github.com/Pennyw0rth/NetExec
 	git clone https://github.com/danielmiessler/SecLists.git /opt/tools/SecLists
 	git clone https://github.com/carlospolop/Auto_Wordlists.git /opt/tools/Auto_Wordlists
@@ -220,7 +230,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
 	git clone https://github.com/DidierStevens/DidierStevensSuite.git /opt/tools/DidierStevensSuite
 	git clone https://github.com/volatilityfoundation/volatility3.git /opt/tools/volatility3;cd /opt/tools/volatility3;pip3 install -r requirements.txt
-	pip3 install vivisect
+	
 
 	#finish
  	printf "\nall downloads will be in /opt/tools/\n"
