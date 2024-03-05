@@ -227,7 +227,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .;rm /opt/tools/v1.0.1.zip
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /opt/tools/chisel/linux.gz;cd /opt/tools/chisel;gunzip linux.gz
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_windows_amd64.gz -O /opt/tools/chisel/windows.gz;gunzip windows.gz
-	wget https://github.com/Hackmanit/TInjA/releases/download/1.1.2/TInjA_1.1.2_linux_amd64.tar.gz -O /opt/tools/TInjA; cd /opt/tools/TInjA/build;tar -xzvf TInjA_1.1.2_linux_amd64.tar.gz
+	wget https://github.com/Hackmanit/TInjA/releases/download/1.1.2/TInjA_1.1.2_linux_amd64.tar.gz -O /opt/tools/TInjA; cd /opt/tools/TInjA;tar -xzvf TInjA_1.1.2_linux_amd64.tar.gz
 
 	#forenList
 	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
