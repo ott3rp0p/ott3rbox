@@ -1,5 +1,5 @@
 #!/bin/bash 
-#should this be a bash script? probably not.
+#should this be a bash script? probably not, but it started out as 4 lines and grew from there.
 #hack the box pwnbox setup. save in ~/my_data for future use.
 #primarily made for hackthebox's pwnbox. could be used elsewhere with very minimal tweaking.
 #run --setup and then use the script in the folder you provide for configuration.
