@@ -1,5 +1,5 @@
 #!/bin/bash 
-#should this be a bash script? probably not, but it started out as 4 lines and grew from there.
+#should this be a bash script? probably not.
 #hack the box pwnbox setup. save in ~/my_data for future use.
 #primarily made for hackthebox's pwnbox. could be used elsewhere with very minimal tweaking.
 #run --setup and then use the script in the folder you provide for configuration.
@@ -14,10 +14,9 @@ fi
 
 #variables
 id=$(whoami)
-workFolder=workFolder
+workFolder=/home/ott3rp0p/my_data/
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
-var1=$1 var2=$2 var3=$3
 penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel\nTInjA"
 langList="\n\n\e[36mLanguages:\033[0m\nRust\nUpdate Go"
 forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework"
@@ -59,16 +58,16 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 #uncomment line to save settings instead of using provided file
 --setup(){
 	read -p $'Provide the folder path for conf files. \nPress enter for default:  ' -i "/home/$id/my_data/ " -e workFolder
-	printf "\nyou will only need to run this the first time. \nafterwards anytime you run this script use\n%sconf/ott3rbox_setup.sh --config\n\n\n" $workFolder
+	printf "\nRun this for setup and to save setting changes\n\nAfterwords use:\n\e[34m%sconf/ott3rbox_setup.sh --config\033[0m\n\n\n" $workFolder
 
 	printf "creating workFolder %sconf" $workFolder
 	mkdir $workFolder/conf 2>/dev/null
 
 	#moving script
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
-	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh;chmod +x $workFolder/conf/ott3rbox_setup.sh
-	cp $scriptDirectory/conf.txt $workFolder/conf/conf.txt
-	sed -i "s+workFolder=workFolder+workFolder=$workFolder+g" $workFolder/conf/ott3rbox_setup.sh
+	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh 2>/dev/null;chmod +x $workFolder/conf/ott3rbox_setup.sh
+	cp $scriptDirectory/conf.txt $workFolder/conf/conf.txt 2>/dev/null
+	sed -i "s+workFolder=/home/ott3rp0p/my_data/+workFolder=$workFolder+g" $workFolder/conf/ott3rbox_setup.sh
 	sed -i "s+changeme+$workFolder+g" $workFolder/conf/conf.txt
 	
 	#dump/copy mate preferences
@@ -93,6 +92,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 
 #configure everything but terminal prompt
 --config(){
+	var1=$1 var2=$2 var3=$3
 	#validate IPv4 format
 	if [ -z $1 ]
 		then printf "needs a target IP"
@@ -167,6 +167,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 #download tools
 #comment out unwanted tools as needed
 --tools(){
+	var1=$1 var2=$2 var3=$3
 
 	#prompts keychain
 	pip3 install vivisect
@@ -180,10 +181,9 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	sudo apt install dirmngr ca-certificates gnupg
 	sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 	echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+	sudo apt update
 	sudo apt install mono-devel --yes
 	sudo apt-get install docker.io docker-compose-plugin --yes
-	sudo apt install libc6
-	
 	#set aws test keys
 	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
  	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -203,6 +203,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 
 	#gitList
 	cargo install x8
+	go install -v github.com/Hackmanit/TInjA@latest
 	pipx install git+https://github.com/Pennyw0rth/NetExec
 	git clone https://github.com/danielmiessler/SecLists.git /opt/tools/SecLists
 	git clone https://github.com/carlospolop/Auto_Wordlists.git /opt/tools/Auto_Wordlists
@@ -214,8 +215,6 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	git clone https://github.com/The-Viper-One/PsMapExec.git /opt/tools/PsMapExec
 	git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /opt/tools/wwwolf-php-webshell
 	git clone https://github.com/jpillora/chisel.git /opt/tools/chisel
-	git clone https://github.com/Hackmanit/TInjA.git /opt/tools/TInjA
-
 
 	wget https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar -O /opt/tools/ysoserial/ysoserial-all.jar
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
@@ -224,10 +223,9 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.exe -O /opt/tools/peass/winpeasany.exe
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.bat -O /opt/tools/peass/winpeas.bat
 	wget https://github.com/byronkg/SharpGPOAbuse/releases/latest/download/SharpGPOAbuse.exe -O /opt/tools/SharpGPOAbuse/SharpGPOAbuse.exe
-	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .;rm /opt/tools/v1.0.1.zip
+	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /opt/tools/chisel/linux.gz;cd /opt/tools/chisel;gunzip linux.gz
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_windows_amd64.gz -O /opt/tools/chisel/windows.gz;gunzip windows.gz
-	wget https://github.com/Hackmanit/TInjA/releases/download/1.1.2/TInjA_1.1.2_linux_amd64.tar.gz -O /opt/tools/TInjA; cd /opt/tools/TInjA;tar -xzvf TInjA_1.1.2_linux_amd64.tar.gz
 
 	#forenList
 	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
