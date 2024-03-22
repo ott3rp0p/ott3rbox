@@ -17,6 +17,7 @@ id=$(whoami)
 workFolder=/home/ott3rp0p/my_data/
 scriptSource=$0
 scriptDirectory=$(dirname "$0")
+var1=$1 var2=$2 var3=$3
 penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel\nTInjA"
 langList="\n\n\e[36mLanguages:\033[0m\nRust\nUpdate Go"
 forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework"
@@ -92,7 +93,6 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 
 #configure everything but terminal prompt
 --config(){
-	var1=$1 var2=$2 var3=$3
 	#validate IPv4 format
 	if [ -z $1 ]
 		then printf "needs a target IP"
@@ -156,7 +156,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 
 #list tools
 --list(){
-	printf "\neverything listed will be downloaded. #comment out in script to ignore certain repos.\n"
+	printf "\neverything listed will be downloaded or updated.\n#comment out in script to ignore certain repos.\ntools are in /opt/tools\n"
 	printf "$penList"
 	printf "$forenList"
 	printf "$langList"
@@ -167,23 +167,25 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 #download tools
 #comment out unwanted tools as needed
 --tools(){
-	var1=$1 var2=$2 var3=$3
 
 	#prompts keychain
 	pip3 install vivisect
 
 	#make directories
 	sudo mkdir /opt/tools;sudo chown $(whoami) /opt/tools;sudo chgrp $(whoami) /opt/tools
-	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse
+	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse;mkdir /opt/tools/pspy64
 
 	#otherStuff
 	sudo apt update --yes
+	sudo apt upgrade --yes
 	sudo apt install dirmngr ca-certificates gnupg
 	sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 	echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
 	sudo apt update
 	sudo apt install mono-devel --yes
-	sudo apt-get install docker.io docker-compose-plugin --yes
+	sudo apt install docker.io --yes
+	sudo apt install docker-compose-plugin --yes
+	sudo systemctl start docker
 	#set aws test keys
 	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
  	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -223,9 +225,10 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEASany.exe -O /opt/tools/peass/winpeasany.exe
 	wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/winPEAS.bat -O /opt/tools/peass/winpeas.bat
 	wget https://github.com/byronkg/SharpGPOAbuse/releases/latest/download/SharpGPOAbuse.exe -O /opt/tools/SharpGPOAbuse/SharpGPOAbuse.exe
-	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .
+	wget https://github.com/dirkjanm/BloodHound.py/archive/refs/tags/v1.0.1.zip -O /opt/tools/v1.0.1.zip;cd /opt/tools;unzip v1.0.1.zip;rm v1.0.1.zip;cd BloodHound.py-1.0.1; pip install .
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /opt/tools/chisel/linux.gz;cd /opt/tools/chisel;gunzip linux.gz
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_windows_amd64.gz -O /opt/tools/chisel/windows.gz;gunzip windows.gz
+	wget https://github.com/DominicBreuker/pspy/releases/download/latest/pspy64 -O /opt/tools/pspy64/pspy64
 
 	#forenList
 	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
