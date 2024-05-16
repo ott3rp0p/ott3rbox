@@ -16,19 +16,20 @@ fi
 id=$(whoami)
 workFolder=/home/ott3rp0p/my_data/
 scriptSource=$0
-scriptDirectory=$(dirname "$0")
+scriptDirectory=$(realpath "$0")
 var1=$1 var2=$2 var3=$3
-penList="\n\e[36mPentest:\033[0m\nNetExec\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel\nTInjA"
+penList="\n\e[36mPentest:\033[0m\nNetExec\nPowerView.py\nx8\nLigolo-ng\np0wny-shell\nPHP webshell limited\nMarshalsec\nYsoserial\nRunasCs\nSharpGPOAbuse\nPEASS-ng\nPsMapExec\nPython BloodHound\nWhiteWinterWolf PHP Shell\nChisel\nTInjA"
 langList="\n\n\e[36mLanguages:\033[0m\nRust\nUpdate Go"
-forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework"
-otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\nAwesomeVIM\n\n"
+forenList="\n\n\e[36mForensics:\033[0m\nOLETools\nDidierStevensSuite\nVivisect\nVolatlity Framework v3"
+blockchain="\n\n\e[36mBlockchain:\033[0m\nFoundry"
+otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nrlwrap\nDocker\nLibre Office\nSet AWS CLI test keys\nAwesomeVIM\n\n"
 
 
 #probably unnecessary help menu
 --help(){
 	printf "🦦 🍭\n\n"
 	if [ -z $1 ] 
-		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--prompt:       use my terminal prompt. shows IP/User/Host/PWD\n--ex-prompt:    show example of promp appearance \n--tools:        download all tools\n--list:         list all tools to be downloaded\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools --prompt\n\n"
+		then printf "use this script to configure your pwnbox's appearance as well as download various tools\n\n--help:         script information. --help options for more\n--setup:        run by itself first to create files\n--config:       configure pwnbox. requires IPv4 address for target\n--prompt:       use my terminal prompt. shows IP/User/Host/PWD\n--ex-prompt:    show example of prompt appearance \n--tools:        download all tools\n--list:         list all tools to be downloaded\n--otter:        print an otter\n\nexample:       ./ott3rbox_setup.sh --help config\nexample:       ./ott3rbox_setup.sh --config 10.129.16.182 --tools --prompt\n\n"
 		exit
 	elif [ $1 == "config" ]
 		then printf "set pwnbox configurations for mate panel/desktop/terminal.\npulled from $workFolder/conf after --setup creates the files.\n\n"
@@ -68,6 +69,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	printf "\ncopying otterbox_setup.sh to %sconf\n" $workFolder
 	cp $scriptSource $workFolder/conf/ott3rbox_setup.sh 2>/dev/null;chmod +x $workFolder/conf/ott3rbox_setup.sh
 	cp $scriptDirectory/conf.txt $workFolder/conf/conf.txt 2>/dev/null
+		cp $scriptDirectory/vpn.sh $workFolder/conf/vpn.sh 2>/dev/null
 	sed -i "s+workFolder=/home/ott3rp0p/my_data/+workFolder=$workFolder+g" $workFolder/conf/ott3rbox_setup.sh
 	sed -i "s+changeme+$workFolder+g" $workFolder/conf/conf.txt
 	
@@ -125,6 +127,11 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
  	sudo sed -i '1i Servername localhost' /etc/apache2/apache2.conf 2>/dev/null
   	sudo sed -i 's/Listen 80/Listen 8811/g' /etc/apache2/ports.conf 2>/dev/null
 
+  	#remove auth from neo4j database
+  	sudo sed -i 's/#dbms.security.auth_enabled=false/dbms.security.auth_enabled=false/g' /etc/neo4j/neo4j.conf 2>/dev/null
+
+  	#sudo without password. probably don't user on your actual machine
+  	sudo sed -ie '$a '"$id"' ALL=\(ALL\) NOPASSWD:ALL' /etc/sudoers
 
 	if [[ $var2 == "--tools" ]]
 		then --tools
@@ -159,6 +166,7 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	printf "\neverything listed will be downloaded or updated.\n#comment out in script to ignore certain repos.\ntools are in /opt/tools\n"
 	printf "$penList"
 	printf "$forenList"
+	printf "$blockchain"
 	printf "$langList"
 	printf "$otherStuff"
 	exit
@@ -173,19 +181,20 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 
 	#make directories
 	sudo mkdir /opt/tools;sudo chown $(whoami) /opt/tools;sudo chgrp $(whoami) /opt/tools
-	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse;mkdir /opt/tools/pspy64
+	mkdir /opt/tools/jd-gui;mkdir /opt/tools/RunasCs;mkdir /opt/tools/peass;mkdir /opt/tools/SharpGPOAbuse;mkdir /opt/tools/pspy64;mkdir /opt/tools/TInjA;mkdir /opt/tools/SysinternalsSuite;mkdir /opt/tools/LibreOffice
 
 	#otherStuff
 	sudo apt update --yes
-	sudo apt upgrade --yes
-	sudo apt install dirmngr ca-certificates gnupg
+	sudo apt -y upgrade 
+	sudo apt install dirmngr ca-certificates gnupg --yes
 	sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 	echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-	sudo apt update
+	sudo apt update --yes
 	sudo apt install mono-devel --yes
 	sudo apt install docker.io --yes
 	sudo apt install docker-compose-plugin --yes
-	sudo systemctl start docker
+	sudo systemctl start docker --yes
+
 	#set aws test keys
 	aws configure set aws_access_key_id "AKIAIOSFODNN7EXAMPLE"
  	aws configure set aws_secret_access_key "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -198,15 +207,17 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	#langList
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	source "$HOME/.cargo/env"
+	rustup default stable
 	sudo apt-get remove golang-go --yes
 	sudo apt-get remove --auto-remove golang-go --yes 
 	wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz -O /tmp/go1.22.0.linux-amd64.tar.gz;cd /tmp
 	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
+	export PATH=$PATH:/usr/local/go/bin
 
 	#gitList
 	cargo install x8
-	go install -v github.com/Hackmanit/TInjA@latest
 	pipx install git+https://github.com/Pennyw0rth/NetExec
+	pipx install git+https://github.com/aniqfakhrul/powerview.py
 	git clone https://github.com/danielmiessler/SecLists.git /opt/tools/SecLists
 	git clone https://github.com/carlospolop/Auto_Wordlists.git /opt/tools/Auto_Wordlists
 	git clone https://github.com/nicocha30/ligolo-ng.git /opt/tools/ligolo-ng
@@ -217,7 +228,9 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	git clone https://github.com/The-Viper-One/PsMapExec.git /opt/tools/PsMapExec
 	git clone https://github.com/WhiteWinterWolf/wwwolf-php-webshell.git /opt/tools/wwwolf-php-webshell
 	git clone https://github.com/jpillora/chisel.git /opt/tools/chisel
-
+	git clone https://github.com/r3motecontrol/Ghostpack-CompiledBinaries.git /opt/Ghostpack
+	git clone https://github.com/ThePorgs/impacket /opt/tools/impacket;pipx install /opt/tools/impacket
+	
 	wget https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar -O /opt/tools/ysoserial/ysoserial-all.jar
 	wget https://github.com/java-decompiler/jd-gui/releases/download/v1.6.6/jd-gui-1.6.6.jar -O /opt/tools/jd-gui/jd-gui-1.6.6.jar
 	wget https://github.com/antonioCoco/RunasCs/releases/latest/download/RunasCs.zip -O /opt/tools/RunasCs/RunasCs.zip;cd /opt/tools/RunasCs/; unzip RunasCs.zip
@@ -229,15 +242,22 @@ otherStuff="\n\n\e[36mOther Stuff:\033[0m\nMono\nDocker\nSet AWS CLI test keys\n
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz -O /opt/tools/chisel/linux.gz;cd /opt/tools/chisel;gunzip linux.gz
 	wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_windows_amd64.gz -O /opt/tools/chisel/windows.gz;gunzip windows.gz
 	wget https://github.com/DominicBreuker/pspy/releases/download/latest/pspy64 -O /opt/tools/pspy64/pspy64
+	wget https://download.sysinternals.com/files/SysinternalsSuite.zip -O /opt/tools/SysinternalsSuite
+	wget https://github.com/Hackmanit/TInjA/releases/download/1.1.3/TInjA_1.1.3_linux_amd64.tar.gz -O /opt/tools/TInjA/
+	wget https://github.com/hanslub42/rlwrap/releases/download/0.46.1/rlwrap-0.46.1.zip -O /opt/tools/rlwrap;cd /opt/tools/rlwrap.zip;unzip rlwrap.zip;cd rlwrap*./configure;make;sudo make install
+	wget https://www.libreoffice.org/donate/dl/deb-x86_64/24.2.3/en-US/LibreOffice_24.2.3_Linux_x86-64_deb.tar.gz -O /opt/tools/LibreOffice/LibreOffice.tar.gz;cd /opt/tools/LibreOffice;tar -xvf LibreOffice.tar.gz; cd Libre*;cd ./DEBS; sudo dpkg -i *.deb
 
 	#forenList
 	git clone https://github.com/decalage2/oletools.git /opt/tools/oletools
 	git clone https://github.com/DidierStevens/DidierStevensSuite.git /opt/tools/DidierStevensSuite
 	git clone https://github.com/volatilityfoundation/volatility3.git /opt/tools/volatility3;cd /opt/tools/volatility3;pip3 install -r requirements.txt
 	
+	#blockchain
+	#pwnbox has chisel already in path so all foundry commands are changed to foundry_command
+	curl -L https://foundry.paradigm.xyz;bash;source /home/ott3rp0p/.zshenv;foundryup;cd /home/$id/.foundry/bin;for i in $(ls); do `mv $i ./foundry_$i`; done
 
 	#finish
- 	printf "\nall downloads will be in /opt/tools/\n"
+ 	printf "\ndownloads will be in /opt/tools/\n"
   
 
 	if [[ $var3 == "--prompt" ]]
